@@ -31,9 +31,6 @@ module.exports = function(config) {
     config.set({
         frameworks: ["jasmine", "karma-typescript"],
         files,
-        proxies: {
-            "/": "/base/public/",
-        },
         preprocessors: {
             "**/*.ts": ["karma-typescript"],
         },
