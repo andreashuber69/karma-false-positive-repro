@@ -1,5 +1,27 @@
-// https://github.com/andreashuber69/net-worth#--
-import { TaskQueue } from "./TaskQueue";
+class TaskQueue {
+    public async queue<T>(createTask: () => Promise<T>) {
+        this.previous = this.executeAfterPrevious(createTask);
+        return await this.previous;
+    }
+
+    public async idle(): Promise<void> {
+        try {
+            await this.previous;
+        // eslint-disable-next-line no-empty
+        } catch {
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private previous: Promise<unknown> = Promise.resolve();
+
+    private async executeAfterPrevious<T>(createTask: () => Promise<T>) {
+        await this.idle();
+
+        return await createTask();
+    }
+}
 
 const delay = async () => await new Promise<void>((resolve) => setTimeout(resolve, 100));
 
@@ -14,13 +36,7 @@ describe("", () => {
 
         try {
             await rejectingPromise;
-            fail("The task unexpectedly succeeded.");
-        } catch (e: unknown) {
-            if (e instanceof Error) {
-                expect(e.message).toEqual("Operation failed.");
-            } else {
-                fail("Unexpected exception type.");
-            }
+        } catch {
         }
 
         await resolvingPromise;
