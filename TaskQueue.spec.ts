@@ -1,12 +1,7 @@
 // https://github.com/andreashuber69/net-worth#--
 import { TaskQueue } from "./TaskQueue";
 
-const randomDelay = async () => await new Promise<number>(
-    (resolve) => {
-        const milliseconds = (Math.random() * 800) + 200;
-        setTimeout(() => void resolve(milliseconds), milliseconds);
-    },
-);
+const delay = async () => await new Promise<void>((resolve) => setTimeout(resolve, 100));
 
 const throwException = async () => await Promise.reject(new Error("Operation failed."));
 
@@ -15,7 +10,7 @@ describe(TaskQueue.name, () => {
         it("should only complete when all tasks have completed", async () => {
             const sut = new TaskQueue();
             const rejectingPromise = sut.queue(throwException);
-            const resolvingPromise = sut.queue(randomDelay);
+            const resolvingPromise = sut.queue(delay);
             await sut.idle();
 
             try {
@@ -29,7 +24,7 @@ describe(TaskQueue.name, () => {
                 }
             }
 
-            console.log(await resolvingPromise);
+            await resolvingPromise;
         });
     });
 });
