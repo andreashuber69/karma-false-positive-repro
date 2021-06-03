@@ -1,0 +1,25 @@
+{
+  "name": "karma-false-positive-repro",
+  "author": {
+    "name": "Andreas Huber"
+  },
+  "private": true,
+  "scripts": {
+    "test": "karma start --browsers Chrome"
+  },
+  "dependencies": {
+    "core-js": "^3.6.4"
+  },
+  "devDependencies": {
+    "@types/jasmine": "^3.5.4",
+    "@types/node": "^10.17.18",
+    "jasmine-core": "^3.5.0",
+    "karma": "^4.4.1",
+    "karma-chrome-launcher": "^3.1.0",
+    "karma-cli": "^2.0.0",
+    "karma-jasmine": "^3.1.1",
+    "karma-typescript": "^4.1.1",
+    "tslib": "^2.2.0",
+    "typescript": "^4.2.4"
+  }
+}
