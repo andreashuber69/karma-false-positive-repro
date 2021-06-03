@@ -9,22 +9,8 @@ export class TaskQueue {
      * @returns The promise returned by `executeTask`.
      */
     public async queue<T>(executeTask: () => Promise<T>) {
-        const current = this.executeAfterPrevious(executeTask);
-        this.previous = current;
-
-        try {
-            return await current;
-        } finally {
-            // The following condition can only be true if no other task has been queued while we've been waiting for
-            // current to settle. IOW, current was the last task in the queue and the queue is now empty.
-            if (this.previous === current) {
-                // Without the following statement, continued use of a TaskQueue object would create a memory leak in
-                // the sense that no involved promise would ever be eligible for GC, because the current promise would
-                // always reference the previous promise, which in turn would reference the promise before the previous
-                // promise and so on. Here, we break that chain when the queue becomes empty.
-                this.previous = Promise.resolve();
-            }
-        }
+        this.previous = this.executeAfterPrevious(executeTask);
+        return await this.previous;
     }
 
     /** Waits for all currently queued tasks to complete. */
