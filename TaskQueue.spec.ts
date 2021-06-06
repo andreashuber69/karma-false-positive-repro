@@ -1,12 +1,12 @@
 class TaskQueue {
-    public async queue<T>(createTask: () => Promise<T>) {
-        this.previous = this.executeAfterPrevious(createTask);
-        return await this.previous;
+    public async queue<T>(createNext: () => Promise<T>) {
+        this.current = this.executeAfterCurrent(createNext);
+        return await this.current;
     }
 
-    public async idle(): Promise<void> {
+    public async idle() {
         try {
-            await this.previous;
+            await this.current;
         // eslint-disable-next-line no-empty
         } catch {
         }
@@ -14,18 +14,18 @@ class TaskQueue {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private previous: Promise<unknown> = Promise.resolve();
+    private current: Promise<unknown> = Promise.resolve();
 
-    private async executeAfterPrevious<T>(createTask: () => Promise<T>) {
+    private async executeAfterCurrent<T>(createNext: () => Promise<T>) {
         await this.idle();
 
-        return await createTask();
+        return await createNext();
     }
 }
 
-const delay = async () => await new Promise<void>((resolve) => setTimeout(resolve, 100));
+const delay = () => new Promise<void>((resolve) => setTimeout(resolve, 100));
 
-const throwException = async () => await Promise.reject(new Error("Operation failed."));
+const throwException = () => Promise.reject(new Error("Operation failed."));
 
 describe("", () => {
     it("", async () => {
