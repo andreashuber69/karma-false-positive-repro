@@ -4,20 +4,15 @@ class TaskQueue {
         return await this.current;
     }
 
-    public async idle() {
-        try {
-            await this.current;
-        // eslint-disable-next-line no-empty
-        } catch {
-        }
-    }
-
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     private current: Promise<unknown> = Promise.resolve();
 
     private async executeAfterCurrent<T>(createNext: () => Promise<T>) {
-        await this.idle();
+        try {
+            await this.current;
+        } catch {
+        }
 
         return await createNext();
     }
@@ -28,13 +23,12 @@ describe("", () => {
         const sut = new TaskQueue();
         const rejectingPromise = sut.queue(() => Promise.reject(new Error("Operation failed.")));
         const resolvingPromise = sut.queue(() => new Promise<void>((resolve) => setTimeout(resolve, 100)));
-        await sut.idle();
+
+        await resolvingPromise;
 
         try {
             await rejectingPromise;
         } catch {
         }
-
-        await resolvingPromise;
     });
 });
