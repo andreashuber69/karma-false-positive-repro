@@ -1,9 +1,7 @@
 describe("", () => {
     it("", async () => {
         const rejectingPromise = Promise.reject(new Error("Operation failed."));
-        const resolvingPromise = new Promise<void>((resolve) => setTimeout(resolve, 100));
-
-        await resolvingPromise;
+        await new Promise<void>((resolve) => setTimeout(resolve, 100));
 
         try {
             await rejectingPromise;
