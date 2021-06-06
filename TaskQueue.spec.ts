@@ -23,15 +23,11 @@ class TaskQueue {
     }
 }
 
-const delay = () => new Promise<void>((resolve) => setTimeout(resolve, 100));
-
-const throwException = () => Promise.reject(new Error("Operation failed."));
-
 describe("", () => {
     it("", async () => {
         const sut = new TaskQueue();
-        const rejectingPromise = sut.queue(throwException);
-        const resolvingPromise = sut.queue(delay);
+        const rejectingPromise = sut.queue(() => Promise.reject(new Error("Operation failed.")));
+        const resolvingPromise = sut.queue(() => new Promise<void>((resolve) => setTimeout(resolve, 100)));
         await sut.idle();
 
         try {
